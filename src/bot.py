@@ -1,4 +1,6 @@
 import telebot;
+from telebot import types
+
 bot = telebot.TeleBot('7084095251:AAHigI_uMhc-CGP1L97MiVYgY2Jhlex4UIg');
 
 help_command_text = """
@@ -37,6 +39,7 @@ wrong_command_text = """
 Я тебя не понимаю, напиши /start, чтобы посмотреть доступные команды
 """
 
+cipher = "caesar"
 
 @bot.message_handler(content_types=['text', 'document'])
 def get_text_messages(message):
@@ -45,10 +48,36 @@ def get_text_messages(message):
     elif message.text == "/start":
         bot.send_message(message.from_user.id, start_command_text)
     elif message.text == "/cipher":
-        # KEYBOARD
-        bot.send_message()
+        get_cipher(message);
     else:
         bot.send_message(message.from_user.id, wrong_command_text)
+
+def get_cipher(message):
+    keyboard = types.InlineKeyboardMarkup()
+    key_caesar = types.InlineKeyboardButton(text='Цезарь', callback_data='caesar')
+    keyboard.add(key_caesar)
+    key_vernam = types.InlineKeyboardButton(text='Вернам', callback_data='vernam')
+    keyboard.add(key_vernam)
+    key_vigener = types.InlineKeyboardButton(text='Виженер', callback_data='vigener')
+    keyboard.add(key_vigener)
+    question = "Выбери шифр, который хочешь использовать:"
+    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+
+def 
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_worker(call):
+    if call.data == "caesar":
+        cipher = call.data
+        bot.send_message(call.message.chat.id, 'Запомню, шифр Цезаря');
+    elif call.data == "vernam":
+        cipher = call.data
+        bot.send_message(call.message.chat.id, 'Запомню, шифр Вернама');
+    elif call.data == "vigener":
+        cipher = call.data
+        bot.send_message(call.message.chat.id, 'Запомню, шифр Виженера');
+    else:
+        bot.send_message(call.message.chat.id, 'Ошибка! Некорректный запрос');
 
 bot.polling(none_stop=True, interval=0)
 
