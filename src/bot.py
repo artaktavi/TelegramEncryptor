@@ -7,8 +7,17 @@ bot = telebot.TeleBot('7084095251:AAHigI_uMhc-CGP1L97MiVYgY2Jhlex4UIg');
 
 cipher = "caesar"
 command_helper = CommandHelper()
-is_waiting_for = ""
-temp_dir_name = "./temp_in_out"
+temp_dir_name = "temp_in_out"
+input_file_name = "temp_input_"
+output_file_name = "temp_output_"
+
+mode = ""
+waiting_input = "input"
+waiting_code = "code"
+waiting_for = ""
+
+input_answer_text = "Принято. Жду ключа для шифра..."
+code_answer_text = "Код получил. Обрабатываю запрос..."
 
 os.makedirs(temp_dir_name)
 
@@ -45,25 +54,69 @@ start_command_text = """
 """
 
 wrong_command_text = """
-Я тебя не понимаю, напиши /start, чтобы посмотреть доступные команды
+Я тебя не понимаю, напиши /help, чтобы посмотреть доступные команды
 """
 
-@bot.message_handler(content_types=['text', 'document'])
+@bot.message_handler(content_types=['document', 'photo', 'audio', 'video', 'voice'])
+def get_document_messages(message):
+    if waiting_for == "":
+        bot.send_message(message.from_user.id, wrong_command_text)
+        return None
+    file_name = message.document.file_name
+    file_info = bot.get_file(message.document.file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+    
+
+@bot.message_handler(content_types=['text'])
 def get_text_messages(message):
-    if is_waiting_for:
-        print("yey")
+    if waiting_for == "":
+        proccess_command(message)
+    elif waiting_for == waiting_input:
+        catch_input(message)
+    elif waiting_for == waiting_code:
+        catch_code(message)
+        
+
+def catch_input(message):
+    if mode == "-h":
+        bot.send_message(message.from_user.id, input_answer_text)
+        waiting_for = waiting_code
     else:
-        if message.text == "/help":
-            bot.send_message(message.from_user.id, help_command_text)
-        elif message.text == "/start":
-            bot.send_message(message.from_user.id, start_command_text)
-        elif message.text == "/cipher":
-            get_cipher(message);
-        elif message.text == "/encrypt":
-            bot.send_message(message.from_user.id, "Твой шифр: " + cipher)
-            command_helper.execute_encypher(cipher, "debug/input.txt", "debug/output.txt", 5)
-        else:
-            bot.send_message(message.from_user.id, wrong_command_text)
+        bot.send_message(message.from_user.id, input_answer_text)
+        waiting_for = waiting_code
+
+def catch_code(message):
+    code = message.text
+    
+
+def execute_command(message):
+    
+
+def proccess_command(message):
+    if message.text == "/help":
+        bot.send_message(message.from_user.id, help_command_text)
+    elif message.text == "/start":
+        bot.send_message(message.from_user.id, start_command_text)
+    elif message.text == "/cipher":
+        get_cipher(message);
+    elif message.text == "/encrypt":
+        bot.send_message(message.from_user.id, "Зашифровка в режиме: " + cipher)
+        waiting_for = waiting_input
+        mode = "-e"
+    elif message.text == "/decrypt":
+        bot.send_message(message.from_user.id, "Расшифровка в режиме: " + cipher)
+        waiting_for = waiting_input
+        mode = "-d"
+    elif message.text == "/generate":
+        bot.send_message(message.from_user.id, "Генерация шифра в режиме: " + cipher)
+        mode = "-g"
+    elif message.text == "/hack":
+        bot.send_message(message.from_user.id, "Взлом шифра в режиме: " + cipher)
+        waiting_for = waiting_input
+        mode = "-h"
+    else:
+        bot.send_message(message.from_user.id, wrong_command_text)
+
 
 def get_cipher(message):
     keyboard = types.InlineKeyboardMarkup()
