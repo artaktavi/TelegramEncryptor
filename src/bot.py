@@ -1,7 +1,16 @@
 import telebot;
 from telebot import types
+from fcrypto import CommandHelper
+import os
 
 bot = telebot.TeleBot('7084095251:AAHigI_uMhc-CGP1L97MiVYgY2Jhlex4UIg');
+
+cipher = "caesar"
+command_helper = CommandHelper()
+is_waiting_for = ""
+temp_dir_name = "./temp_in_out"
+
+os.makedirs(temp_dir_name)
 
 help_command_text = """
 Привет, с тобой на связи TCrypto бот!
@@ -39,18 +48,22 @@ wrong_command_text = """
 Я тебя не понимаю, напиши /start, чтобы посмотреть доступные команды
 """
 
-cipher = "caesar"
-
 @bot.message_handler(content_types=['text', 'document'])
 def get_text_messages(message):
-    if message.text == "/help":
-        bot.send_message(message.from_user.id, help_command_text)
-    elif message.text == "/start":
-        bot.send_message(message.from_user.id, start_command_text)
-    elif message.text == "/cipher":
-        get_cipher(message);
+    if is_waiting_for:
+        print("yey")
     else:
-        bot.send_message(message.from_user.id, wrong_command_text)
+        if message.text == "/help":
+            bot.send_message(message.from_user.id, help_command_text)
+        elif message.text == "/start":
+            bot.send_message(message.from_user.id, start_command_text)
+        elif message.text == "/cipher":
+            get_cipher(message);
+        elif message.text == "/encrypt":
+            bot.send_message(message.from_user.id, "Твой шифр: " + cipher)
+            command_helper.execute_encypher(cipher, "debug/input.txt", "debug/output.txt", 5)
+        else:
+            bot.send_message(message.from_user.id, wrong_command_text)
 
 def get_cipher(message):
     keyboard = types.InlineKeyboardMarkup()
@@ -62,8 +75,6 @@ def get_cipher(message):
     keyboard.add(key_vigener)
     question = "Выбери шифр, который хочешь использовать:"
     bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
-
-def 
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
@@ -81,3 +92,4 @@ def callback_worker(call):
 
 bot.polling(none_stop=True, interval=0)
 
+os.rmdir(temp_dir_name)
