@@ -26,7 +26,7 @@ class CommandHelper:
         elif mode == "-h":
             return "hack"
         else:
-            return error_text
+            return self.error_text
 
     def check_cypher(self, cypher : str) -> str:
         if cypher == "vernam":
