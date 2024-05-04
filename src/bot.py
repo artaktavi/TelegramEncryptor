@@ -3,7 +3,8 @@ from telebot import types
 from fcrypto import CommandHelper
 import os
 
-bot = telebot.TeleBot('7084095251:AAHigI_uMhc-CGP1L97MiVYgY2Jhlex4UIg');
+bot_token = os.environ.get('BOT_API_KEY')
+bot = telebot.TeleBot(bot_token)
 
 wrong_hack_text = "No possibility for hacking vernam cipher"
 wrong_hack_answer_text = "Извини, друг, такой шифр я взламывать не умею"
@@ -144,13 +145,13 @@ def catch_key(message):
         is_document_flag = False
         waiting_for = ""
         return
-    doc = open(output_file_name, "rb")
-    if is_document_flag:
-        bot.send_document(message.from_user.id, doc)
-    else:
-        bot.send_message(message.from_user.id, doc.read())
-    is_document_flag = False
-    waiting_for = ""
+    with open(output_file_name, "rb") as doc:
+        if is_document_flag:
+            bot.send_document(message.from_user.id, doc)
+        else:
+            bot.send_message(message.from_user.id, doc.read())
+        is_document_flag = False
+        waiting_for = ""
 
 def proccess_command(message):
     global waiting_for
