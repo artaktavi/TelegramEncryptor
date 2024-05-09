@@ -9,8 +9,9 @@ Here are some features of this project:
   - Vigener cipher
   - Vernam cipher
 - _**Hacking**_ of Caesar cipher by frequency analysis method
+- _**Generation**_ of key for any of ciphers above
 
-TCrypto is completely _**safe**_ tool. It doesn't save personal data or user's messages text.
+TCrypto is absolutely _**safe**_ tool. It doesn't save personal data or user's messages text.
 
 
 
@@ -18,7 +19,7 @@ TCrypto is completely _**safe**_ tool. It doesn't save personal data or user's m
 
 If you're completely confused, just send `/help` message to bot, it will show you short info about TCrypto and it's usage.
 
-Send `/start` message to interact with TCrypto. It will show you instruction. You should choose cipher you want to use after that.
+Send `/start` message to interact with TCrypto. It will show you instruction.
 
 To change cipher send `/cipher` message to bot, it should suggest options.
 
@@ -28,7 +29,9 @@ Now, when cipher is chosen, use:
 - `/decrypt`
 - `/hack`
 
-commands for encryption \ decryption \ hacking, after that send message with text \ file with text that you want to process. Bot will respond about correctness of your request. After that bot should send you result, sometimes it can take time, so just wait a bit...
+commands for encryption \ decryption \ hacking, after that send message with text \ file with text that you want to process (and key if necessary). Bot will respond about correctness of your request. After that bot should send you result, sometimes it can take time, so just wait a bit...
+
+- Use `/generate` command to generate random key for current cipher
 
 Success! You got a encrypted \ decrypted \ hacked file or message, it depends on what did you send to bot (file or message) and chosen command.
 
